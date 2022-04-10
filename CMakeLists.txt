@@ -29,7 +29,7 @@ endif()
 message(WARNING "Invalid PLATFORM \"${ElfloaderImage}\"")
 elfloader_import_project()
 message(WARNING "Invalid PLATFORM \"${ElfloaderImage}\"")
-add_subdirectory(apps/sel4test-driver)
+# add_subdirectory(apps/sel4test-driver)
 
 if(SIMULATION)
     include(simulation)
