@@ -26,10 +26,10 @@ if((NOT Sel4testAllowSettingsOverride) AND (KernelArchARM OR KernelArchRiscV OR 
     # Elfloader settings that correspond to how Data61 sets its boards up.
     ApplyData61ElfLoaderSettings(${KernelPlatform} ${KernelSel4Arch})
 endif()
-message(WARNING "Invalid PLATFORM \"${ElfloaderImage}\"")
+
 elfloader_import_project()
-message(WARNING "Invalid PLATFORM \"${ElfloaderImage}\"")
-# add_subdirectory(apps/sel4test-driver)
+
+add_subdirectory(apps/sel4test-driver)
 
 if(SIMULATION)
     include(simulation)
