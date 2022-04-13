@@ -26,6 +26,7 @@ if(Sel4testAllowSettingsOverride)
 else()
     mark_as_advanced(FORCE Sel4testHaveTimer Sel4testHaveCache)
 endif()
+# message(FATAL_ERROR "Invalid PLATFORM \"${sel4test-driver}\"")
 add_config_library(sel4test-driver "${configure_string}")
 
 find_package(musllibc REQUIRED)
@@ -38,10 +39,10 @@ find_package(sel4_projects_libs REQUIRED)
 set(UserLinkerGCSections OFF CACHE BOOL "" FORCE)
 # This sets up environment build flags and imports musllibc and runtime libraries.
 musllibc_setup_build_environment_with_sel4runtime()
+# message(FATAL_ERROR "Invalid PLATFORM \"${KernelSel4Arch}\"")
 sel4_import_libsel4()
 util_libs_import_libraries()
 sel4_libs_import_libraries()
-
 # Setting LibNanopb On causes its libraries to be created when sel4_projects_libs_import_libraries
 # is called.
 set(LibNanopb ON CACHE BOOL "" FORCE)
