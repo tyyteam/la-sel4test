@@ -27,6 +27,7 @@ if((NOT Sel4testAllowSettingsOverride) AND (KernelArchARM OR KernelArchRiscV OR 
     ApplyData61ElfLoaderSettings(${KernelPlatform} ${KernelSel4Arch})
 endif()
 
+
 elfloader_import_project()
 
 add_subdirectory(apps/sel4test-driver)
