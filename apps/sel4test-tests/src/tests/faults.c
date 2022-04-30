@@ -269,6 +269,19 @@ do_bad_syscall(void)
         [scno] "i"(BAD_SYSCALL_NUMBER)
         : "x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7", "memory", "cc"
     );
+#elif defined(CONFIG_ARCH_LOONGARCH)
+    asm volatile(
+        "li a7, %[scno]\n\t"
+        "mv a0, %[val]\n\t"
+        "bad_syscall_address:\n\t"
+        "do_bad_syscall-riscv-ecall \n\t"
+        "bad_syscall_restart_address:\n\t"
+        "mv %[val], a0\n\t"
+        : [val] "+r"(val)
+        : [addrreg] "r"(x),
+        [scno] "i"(BAD_SYSCALL_NUMBER)
+        : "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "memory", "cc"
+    );
 #elif defined(CONFIG_ARCH_RISCV)
     asm volatile(
         "li a7, %[scno]\n\t"
