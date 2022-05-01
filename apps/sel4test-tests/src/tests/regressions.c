@@ -183,6 +183,27 @@ int test_write_registers(env_t env)
     /* This is an ABI requirment */
     extern char __global_pointer$[];
     context.gp = (seL4_Word) __global_pointer$;
+#elif defined(CONFIG_ARCH_LOONGARCH)
+    context.pc = (seL4_Word)&test_registers;
+    context.ra = 1;
+    context.sp = 2;
+    /* skip gp and tp, they are 'unallocatable' */
+    context.t0 = 4;
+    context.t1 = 5;
+    context.t2 = 6;
+    context.s9 = 7;	//in RISCV s0 is its Stack frames reg, but in LOONGARCH it is s9. 
+    context.s0 = 8;	//in RISCV s1 is its first static reg, but in LOONGARCH it is s0. 
+    /* skip a0, we use it to load the immediate values to and compare the rest */
+    context.a1 = 10;
+    context.a2 = 11;
+    context.a3 = 12;
+    context.a4 = 13;
+    context.a5 = 14;
+    context.a6 = 15;
+
+    /* This is an ABI requirment */
+    extern char __global_pointer$[];
+    context.gp = (seL4_Word) __global_pointer$;
 #else
 #error "Unsupported architecture"
 #endif
