@@ -295,8 +295,14 @@ static int test_page_uncached_after_retype(env_t env)
     cspacepath_t dest_path;
     vka_cspace_make_path(vka, frame, &dest_path);
     /* Create a frame from the untyped */
+#ifdef CONFIG_ARCH_LOONGARCH
+    error = seL4_Untyped_Retype(untyped, seL4_ARCH_16KPage, PAGE_BITS_16K, dest_path.root, dest_path.dest,
+                                dest_path.destDepth, dest_path.offset, 1);    
+#else
     error = seL4_Untyped_Retype(untyped, seL4_ARCH_4KPage, PAGE_BITS_4K, dest_path.root, dest_path.dest,
                                 dest_path.destDepth, dest_path.offset, 1);
+#endif
+    
     test_error_eq(error, seL4_NoError);
 
     /* map in the without cacheability */
@@ -310,8 +316,13 @@ static int test_page_uncached_after_retype(env_t env)
     vka_cnode_revoke(&src_path);
 
     /* Create the frame with the same untyped. The kernel guarantees that the contents have been zeroed. */
+#ifdef CONFIG_ARCH_LOONGARCH 
     error = seL4_Untyped_Retype(untyped, seL4_ARCH_4KPage, PAGE_BITS_4K, dest_path.root, dest_path.dest,
                                 dest_path.destDepth, dest_path.offset, 1);
+#else
+    error = seL4_Untyped_Retype(untyped, seL4_ARCH_16KPage, PAGE_BITS_16K, dest_path.root, dest_path.dest,
+                                dest_path.destDepth, dest_path.offset, 1);
+#endif
     test_error_eq(error, seL4_NoError);
 
 
