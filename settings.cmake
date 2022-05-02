@@ -79,7 +79,7 @@ if(NOT Sel4testAllowSettingsOverride)
     elseif(
         KernelPlatformZynqmp
         OR KernelPlatformPolarfire
-        OR (SIMULATION AND (KernelArchRiscV OR KernelArchARM))
+        OR (SIMULATION AND (KernelArchRiscV OR KernelArchARM OR KernelArchLoongarch))
     )
         # Frequency settings of the ZynqMP make the ltimer tests problematic
         # Polarfire does not have a complete ltimer implementation
