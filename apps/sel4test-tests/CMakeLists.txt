@@ -10,7 +10,7 @@ project(sel4test-tests C CXX)
 
 # Use arm arch source files on RISCV
 set(arch ${KernelArch})
-if(KernelArchRiscV)
+if(KernelArchRiscV OR KernelArchLoongarch)
     set(arch arm)
 endif()
 
