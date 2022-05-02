@@ -202,8 +202,8 @@ int test_write_registers(env_t env)
     context.a6 = 15;
 
     /* This is an ABI requirment */
-    extern char __global_pointer$[];
-    context.gp = (seL4_Word) __global_pointer$;
+    //extern char __global_pointer$[];
+    //context.gp = (seL4_Word) __global_pointer$;
 #else
 #error "Unsupported architecture"
 #endif
