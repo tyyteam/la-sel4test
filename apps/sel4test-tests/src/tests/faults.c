@@ -108,14 +108,14 @@ do_read_fault(void)
     );
 #elif defined(CONFIG_ARCH_LOONGARCH)
     asm volatile(
-        "mv a0, %[val]\n\t"
+        "move $a0, %[val]\n\t"
         "read_fault_address:\n\t"
-        LOAD_S " a0, 0(%[addrreg])\n\t"
+        "ld.d $a0, %[addrreg], 0\n\t"
         "read_fault_restart_address:\n\t"
-        "mv %[val], a0\n\t"
+        "move %[val], $a0\n\t"
         : [val] "+r"(val)
         : [addrreg] "r"(x)
-        : "a0"
+        : "$a0"
     );
 #elif defined(CONFIG_ARCH_X86)
     asm volatile(
@@ -177,14 +177,14 @@ do_write_fault(void)
     );
 #elif defined(CONFIG_ARCH_LOONGARCH)
     asm volatile(
-        "mv a0, %[val]\n\t"
+        "move $a0, %[val]\n\t"
         "write_fault_address:\n\t"
-        STORE_S " a0, 0(%[addrreg])\n\t"
+        "st.d $a0, 0(%[addrreg])\n\t"
         "write_fault_restart_address:\n\t"
-        "mv %[val], a0\n\t"
+        "move %[val], $a0\n\t"
         : [val] "+r"(val)
         : [addrreg] "r"(x)
-        : "a0"
+        : "$a0"
     );
 #elif defined(CONFIG_ARCH_X86)
     asm volatile(
@@ -242,13 +242,13 @@ do_instruction_fault(void)
     );
 #elif defined(CONFIG_ARCH_LOONGARCH)
     asm volatile(
-        "mv a0, %[val]\n\t"
-        "jalr %[addrreg]\n\t"
+        "move $a0, %[val]\n\t"
+        "jirl $ra, %[addrreg], 0\n\t"
         "instruction_fault_restart_address:\n\t"
-        "mv %[val], a0\n\t"
+        "move %[val], $a0\n\t"
         : [val] "+r"(val)
         : [addrreg] "r"(x)
-        : "a0", "ra"
+        : "$a0", "$ra"
     );
 #elif defined(CONFIG_ARCH_X86)
     asm volatile(
@@ -301,19 +301,6 @@ do_bad_syscall(void)
         [scno] "i"(BAD_SYSCALL_NUMBER)
         : "x0", "x1", "x2", "x3", "x4", "x5", "x6", "x7", "memory", "cc"
     );
-#elif defined(CONFIG_ARCH_LOONGARCH)
-    asm volatile(
-        "li a7, %[scno]\n\t"
-        "mv a0, %[val]\n\t"
-        "bad_syscall_address:\n\t"
-        "do_bad_syscall-riscv-ecall \n\t"
-        "bad_syscall_restart_address:\n\t"
-        "mv %[val], a0\n\t"
-        : [val] "+r"(val)
-        : [addrreg] "r"(x),
-        [scno] "i"(BAD_SYSCALL_NUMBER)
-        : "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "memory", "cc"
-    );
 #elif defined(CONFIG_ARCH_RISCV)
     asm volatile(
         "li a7, %[scno]\n\t"
@@ -326,6 +313,19 @@ do_bad_syscall(void)
         : [addrreg] "r"(x),
         [scno] "i"(BAD_SYSCALL_NUMBER)
         : "a0", "a1", "a2", "a3", "a4", "a5", "a6", "a7", "memory", "cc"
+    );
+#elif defined(CONFIG_ARCH_LOONGARCH)
+    asm volatile(
+        "li.d $a7, %[scno]\n\t"
+        "move $a0, %[val]\n\t"
+        "bad_syscall_address:\n\t"
+        "syscal 0\n\t"
+        "bad_syscall_restart_address:\n\t"
+        "move %[val], $a0\n\t"
+        : [val] "+r"(val)
+        : [addrreg] "r"(x),
+        [scno] "i"(BAD_SYSCALL_NUMBER)
+        : "$a0", "$a1", "$a2", "$a3", "$a4", "$a5", "$a6", "$a7", "memory", "cc"
     );
 #elif defined(CONFIG_ARCH_X86_64) && defined(CONFIG_SYSENTER)
     asm volatile(
@@ -450,11 +450,11 @@ do_bad_instruction(void)
 #elif defined(CONFIG_ARCH_LOONGARCH)
     asm volatile(
         /* Save SP */
-        "mv  a0, sp\n\t"
-        STORE_S " a0, 0(%[sp])\n\t"
+        "move $a0, $sp\n\t"
+        "st.d $a0, %[sp], 0\n\t"
 
         /* Set SP to val. */
-        "mv sp, %[valptr]\n\t"
+        "move $sp, %[valptr]\n\t"
 
         "bad_instruction_address:\n\t"
         ".word 0xffffffff\n\t"
@@ -462,7 +462,7 @@ do_bad_instruction(void)
         :
         : [sp] "r"(&bad_instruction_sp),
         [valptr] "r"(&val)
-        : "a0", "memory"
+        : "$a0", "memory"
     );
 #elif defined(CONFIG_ARCH_X86_64)
     asm volatile(
