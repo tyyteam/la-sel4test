@@ -179,7 +179,7 @@ do_write_fault(void)
     asm volatile(
         "move $a0, %[val]\n\t"
         "write_fault_address:\n\t"
-        "st.d $a0, 0(%[addrreg])\n\t"
+        "st.d $a0, %[addrreg], 0\n\t"
         "write_fault_restart_address:\n\t"
         "move %[val], $a0\n\t"
         : [val] "+r"(val)
@@ -319,7 +319,7 @@ do_bad_syscall(void)
         "li.d $a7, %[scno]\n\t"
         "move $a0, %[val]\n\t"
         "bad_syscall_address:\n\t"
-        "syscal 0\n\t"
+        "syscall 0\n\t"
         "bad_syscall_restart_address:\n\t"
         "move %[val], $a0\n\t"
         : [val] "+r"(val)
