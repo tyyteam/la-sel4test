@@ -106,6 +106,17 @@ do_read_fault(void)
         : [addrreg] "r"(x)
         : "a0"
     );
+#elif defined(CONFIG_ARCH_LOONGARCH)
+    asm volatile(
+        "mv a0, %[val]\n\t"
+        "read_fault_address:\n\t"
+        LOAD_S " a0, 0(%[addrreg])\n\t"
+        "read_fault_restart_address:\n\t"
+        "mv %[val], a0\n\t"
+        : [val] "+r"(val)
+        : [addrreg] "r"(x)
+        : "a0"
+    );
 #elif defined(CONFIG_ARCH_X86)
     asm volatile(
         "mov %[val], %%eax\n\t"
@@ -164,6 +175,17 @@ do_write_fault(void)
         : [addrreg] "r"(x)
         : "a0"
     );
+#elif defined(CONFIG_ARCH_LOONGARCH)
+    asm volatile(
+        "mv a0, %[val]\n\t"
+        "write_fault_address:\n\t"
+        STORE_S " a0, 0(%[addrreg])\n\t"
+        "write_fault_restart_address:\n\t"
+        "mv %[val], a0\n\t"
+        : [val] "+r"(val)
+        : [addrreg] "r"(x)
+        : "a0"
+    );
 #elif defined(CONFIG_ARCH_X86)
     asm volatile(
         "mov %[val], %%eax\n\t"
@@ -209,6 +231,16 @@ do_instruction_fault(void)
         : "x0", "x30"
     );
 #elif defined(CONFIG_ARCH_RISCV)
+    asm volatile(
+        "mv a0, %[val]\n\t"
+        "jalr %[addrreg]\n\t"
+        "instruction_fault_restart_address:\n\t"
+        "mv %[val], a0\n\t"
+        : [val] "+r"(val)
+        : [addrreg] "r"(x)
+        : "a0", "ra"
+    );
+#elif defined(CONFIG_ARCH_LOONGARCH)
     asm volatile(
         "mv a0, %[val]\n\t"
         "jalr %[addrreg]\n\t"
@@ -415,6 +447,23 @@ do_bad_instruction(void)
         [valptr] "r"(&val)
         : "a0", "memory"
     );
+#elif defined(CONFIG_ARCH_LOONGARCH)
+    asm volatile(
+        /* Save SP */
+        "mv  a0, sp\n\t"
+        STORE_S " a0, 0(%[sp])\n\t"
+
+        /* Set SP to val. */
+        "mv sp, %[valptr]\n\t"
+
+        "bad_instruction_address:\n\t"
+        ".word 0xffffffff\n\t"
+        "bad_instruction_restart_address:\n\t"
+        :
+        : [sp] "r"(&bad_instruction_sp),
+        [valptr] "r"(&val)
+        : "a0", "memory"
+    );
 #elif defined(CONFIG_ARCH_X86_64)
     asm volatile(
         /* save RSP */
@@ -481,6 +530,10 @@ set_good_magic_and_set_pc(seL4_CPtr tcb, seL4_Word new_pc)
     ctx.x0 = GOOD_MAGIC;
     ctx.pc = new_pc;
 #elif defined(CONFIG_ARCH_RISCV)
+    test_check((int)ctx.a0 == BAD_MAGIC);
+    ctx.a0 = GOOD_MAGIC;
+    ctx.pc = new_pc;
+#elif defined(CONFIG_ARCH_LOONGARCH)
     test_check((int)ctx.a0 == BAD_MAGIC);
     ctx.a0 = GOOD_MAGIC;
     ctx.pc = new_pc;
@@ -596,6 +649,11 @@ static int handle_fault(seL4_CPtr fault_ep, seL4_CPtr tcb, seL4_Word expected_fa
         test_eq(seL4_GetMR(seL4_UnknownSyscall_FaultIP), (seL4_Word) bad_syscall_restart_address);
         seL4_SetMR(seL4_UnknownSyscall_A0, GOOD_MAGIC);
         seL4_SetMR(seL4_UnknownSyscall_FaultIP, (seL4_Word)bad_syscall_restart_address);
+#elif defined(CONFIG_ARCH_LOONGARCH)
+        test_eq((int)seL4_GetMR(seL4_UnknownSyscall_A0), BAD_MAGIC);
+        test_eq(seL4_GetMR(seL4_UnknownSyscall_FaultIP), (seL4_Word) bad_syscall_restart_address);
+        seL4_SetMR(seL4_UnknownSyscall_A0, GOOD_MAGIC);
+        seL4_SetMR(seL4_UnknownSyscall_FaultIP, (seL4_Word)bad_syscall_restart_address);
 #elif defined(CONFIG_ARCH_IA32)
         test_eq(seL4_GetMR(seL4_UnknownSyscall_EBX), BAD_MAGIC);
         seL4_SetMR(seL4_UnknownSyscall_EBX, GOOD_MAGIC);
@@ -631,6 +689,9 @@ static int handle_fault(seL4_CPtr fault_ep, seL4_CPtr tcb, seL4_Word expected_fa
         test_check(seL4_GetMR(3) == 0x02000000);
         test_check(seL4_GetMR(4) == 0);
 #elif defined(CONFIG_ARCH_RISCV)
+        test_check(seL4_GetMR(2) == 2);
+        test_check(seL4_GetMR(3) == 0);
+#elif defined(CONFIG_ARCH_LOONGARCH)
         test_check(seL4_GetMR(2) == 2);
         test_check(seL4_GetMR(3) == 0);
 #elif defined(CONFIG_ARCH_X86)

@@ -329,6 +329,60 @@ test_registers:
 test_registers_fail:
     li a0, 1
     j reply_trampoline
+#elif defined(CONFIG_ARCH_LOONGARCH)
+/* Trampoline for providing the thread a valid stack before entering
+ * reply_to_parent. No jal required because reply_to_parent does not
+ * return.
+ */
+reply_trampoline:
+    la a1, _safe_stack
+    mv sp, a1
+    j reply_to_parent
+
+.global test_registers
+test_registers:
+
+    li a0, 1
+    bne ra, a0, test_registers_fail
+    li a0, 2
+    bne sp, a0, test_registers_fail
+    li a0, 4
+    bne t0, a0, test_registers_fail
+    li a0, 5
+    bne t1, a0, test_registers_fail
+    li a0, 6
+    bne t2, a0, test_registers_fail
+    li a0, 7
+    bne s0, a0, test_registers_fail
+    li a0, 8
+    bne s1, a0, test_registers_fail
+    li a0, 10
+    bne a1, a0, test_registers_fail
+    li a0, 11
+    bne a2, a0, test_registers_fail
+    li a0, 12
+    bne a0, a3, test_registers_fail
+    li a0, 13
+    bne a0, a4, test_registers_fail
+    li a0, 14
+    bne a0, a5, test_registers_fail
+    li a0, 15
+    bne a0, a6, test_registers_fail
+#if 0
+    /* skip x3, see below */
+    context.x4 = 3;
+#endif
+
+    /* Return success. Note that we don't bother saving registers or bl because
+     * we're not planning to return here and we don't have a valid stack.
+     */
+    mv a0, x0
+    j reply_trampoline
+
+    /* Return failure. */
+test_registers_fail:
+    li a0, 1
+    j reply_trampoline
 
 #else
 #error Unsupported architecture
