@@ -317,10 +317,10 @@ static int test_page_uncached_after_retype(env_t env)
 
     /* Create the frame with the same untyped. The kernel guarantees that the contents have been zeroed. */
 #ifdef CONFIG_ARCH_LOONGARCH 
-    error = seL4_Untyped_Retype(untyped, seL4_ARCH_4KPage, PAGE_BITS_4K, dest_path.root, dest_path.dest,
+    error = seL4_Untyped_Retype(untyped, seL4_ARCH_16KPage, PAGE_BITS_16K, dest_path.root, dest_path.dest,
                                 dest_path.destDepth, dest_path.offset, 1);
 #else
-    error = seL4_Untyped_Retype(untyped, seL4_ARCH_16KPage, PAGE_BITS_16K, dest_path.root, dest_path.dest,
+    error = seL4_Untyped_Retype(untyped, seL4_ARCH_4KPage, PAGE_BITS_4K, dest_path.root, dest_path.dest,
                                 dest_path.destDepth, dest_path.offset, 1);
 #endif
     test_error_eq(error, seL4_NoError);
