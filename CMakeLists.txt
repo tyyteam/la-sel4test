@@ -20,6 +20,7 @@ set(KernelRootCNodeSizeBits 13 CACHE INTERNAL "")
 
 # Set our custom domain schedule
 set(KernelDomainSchedule "${CMAKE_CURRENT_LIST_DIR}/domain_schedule.c" CACHE INTERNAL "")
+
 sel4_import_kernel()
 
 if((NOT Sel4testAllowSettingsOverride) AND (KernelArchARM OR KernelArchRiscV OR KernelArchLoongarch))
