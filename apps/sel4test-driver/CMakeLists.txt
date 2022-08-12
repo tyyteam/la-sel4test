@@ -84,6 +84,9 @@ target_link_libraries(
 )
 target_compile_options(sel4test-driver PRIVATE -Werror -g)
 
+if(${sel4_arch} STREQUAL "loongarch64")
+	set_target_properties(sel4test-driver PROPERTIES  LINK_FLAGS "-z max-page-size=16384")
+endif()
 # Set this image as the rootserver
 include(rootserver)
 DeclareRootserver(sel4test-driver)
