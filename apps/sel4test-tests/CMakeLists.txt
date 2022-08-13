@@ -57,3 +57,8 @@ target_link_libraries(
         sel4serialserver_tests
     PRIVATE sel4test-driver_Config
 )
+
+if(${sel4_arch} STREQUAL "loongarch64")
+    set(linker_lds_path "${CMAKE_CURRENT_SOURCE_DIR}/../../sel4test_loongarch.lds")
+    set_target_properties(sel4test-tests PROPERTIES  LINK_FLAGS " -z max-page-size=16384 -Wl,-T ${linker_lds_path} ")
+endif()
