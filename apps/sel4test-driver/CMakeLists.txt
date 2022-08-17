@@ -91,3 +91,12 @@ DeclareRootserver(sel4test-driver)
 # if(${sel4_arch} STREQUAL "loongarch64")
 # 	set_target_properties(sel4test-driver PROPERTIES  LINK_FLAGS " -z max-page-size=16384 ")
 # endif()
+
+# if(${sel4_arch} STREQUAL "loongarch64")
+#     set(linker_lds_path "${CMAKE_CURRENT_SOURCE_DIR}/sel4test-driver_loongarch.lds")
+#     set_target_properties(sel4test-driver PROPERTIES  LINK_FLAGS "-Wl,-T ${linker_lds_path} ")
+# endif()
+
+# if(${sel4_arch} STREQUAL "loongarch64")
+#     set_target_properties(sel4test-driver PROPERTIES  LINK_FLAGS " -Wall -Wl,--section-start=.init=0x10000 ")
+# endif()
