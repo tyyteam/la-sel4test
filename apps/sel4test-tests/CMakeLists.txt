@@ -58,11 +58,11 @@ target_link_libraries(
     PRIVATE sel4test-driver_Config
 )
 
-# if(${sel4_arch} STREQUAL "loongarch64")
-#     set(linker_lds_path "${CMAKE_CURRENT_SOURCE_DIR}/../../sel4test_loongarch.lds")
-#     set_target_properties(sel4test-tests PROPERTIES  LINK_FLAGS " -z max-page-size=16384 -Wl,-T ${linker_lds_path} ")
-# endif()
-
 if(${sel4_arch} STREQUAL "loongarch64")
-    set_target_properties(sel4test-tests PROPERTIES  LINK_FLAGS " -Wall -Wl,--section-start=.init=0x10000 ")
+    set(linker_lds_path "${CMAKE_CURRENT_SOURCE_DIR}/sel4test-tests_loongarch.lds")
+    set_target_properties(sel4test-tests PROPERTIES  LINK_FLAGS " -z max-page-size=16384 -Wl,-T ${linker_lds_path} ")
 endif()
+
+# if(${sel4_arch} STREQUAL "loongarch64")
+    # set_target_properties(sel4test-tests PROPERTIES  LINK_FLAGS " -z max-page-size=16384 -Wall -Wl,--section-start=.interp=0x100000 ")
+# endif()
