@@ -692,7 +692,7 @@ static int handle_fault(seL4_CPtr fault_ep, seL4_CPtr tcb, seL4_Word expected_fa
         test_check(seL4_GetMR(2) == 2);
         test_check(seL4_GetMR(3) == 0);
 #elif defined(CONFIG_ARCH_LOONGARCH)
-        test_check(seL4_GetMR(2) == 2);
+        test_check(seL4_GetMR(2) == 0xD);
         test_check(seL4_GetMR(3) == 0);
 #elif defined(CONFIG_ARCH_X86)
         /*
