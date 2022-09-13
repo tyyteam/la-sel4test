@@ -16,9 +16,9 @@ static const frame_type_t frame_types[] = {
     * Polarfire has 1GiB of memory can't allocate a 1GiB page for user space */
     
 //unset __loongarch_xlen == 64 &&
-#if !defined(CONFIG_PLAT_ROCKETCHIP) && !defined(CONFIG_PLAT_ARIANE) &&!defined(CONFIG_PLAT_POLARFIRE)
+#if !defined(CONFIG_PLAT_3A5000)
     { seL4_LOONGARCH_Giga_Page, 0, seL4_HugePageBits, },
-#endif
     { seL4_LOONGARCH_Mega_Page, 0, seL4_LargePageBits, },
+#endif
     { seL4_LOONGARCH_16K_Page, BIT(seL4_LargePageBits), seL4_PageBits, },
 };
