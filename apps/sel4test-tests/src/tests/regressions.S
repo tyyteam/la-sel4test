@@ -346,32 +346,58 @@ test_registers:
     bne $ra, $a0, test_registers_fail
     li.w $a0, 2
     bne $sp, $a0, test_registers_fail
+    li.w $a0, 3
+    bne $s0, $a0, test_registers_fail
     li.w $a0, 4
-    bne $t0, $a0, test_registers_fail
-    li.w $a0, 5
-    bne $t1, $a0, test_registers_fail
-    li.w $a0, 6
-    bne $t2, $a0, test_registers_fail
-    li.w $a0, 7
-    bne $fp, $a0, test_registers_fail
-    li.w $a0, 8
     bne $s1, $a0, test_registers_fail
+    li.w $a0, 5
+    bne $s2, $a0, test_registers_fail
+    li.w $a0, 6
+    bne $s3, $a0, test_registers_fail
+    li.w $a0, 7
+    bne $s4, $a0, test_registers_fail
+    li.w $a0, 8
+    bne $s5, $a0, test_registers_fail
+    li.w $a0, 9
+    bne $s6, $a0, test_registers_fail
     li.w $a0, 10
-    bne $a1, $a0, test_registers_fail
+    bne $s7, $a0, test_registers_fail
     li.w $a0, 11
-    bne $a2, $a0, test_registers_fail
+    bne $s8, $a0, test_registers_fail
     li.w $a0, 12
-    bne $a0, $a3, test_registers_fail
+    bne $fp, $a0, test_registers_fail
     li.w $a0, 13
-    bne $a0, $a4, test_registers_fail
+    bne $a1, $a0, test_registers_fail
     li.w $a0, 14
-    bne $a0, $a5, test_registers_fail
+    bne $a2, $a0, test_registers_fail
     li.w $a0, 15
-    bne $a0, $a6, test_registers_fail
-#if 0
-    /* skip x3, see below */
-    context.x4 = 3;
-#endif
+    bne $a3, $a0, test_registers_fail
+    li.w $a0, 16
+    bne $a4, $a0, test_registers_fail
+    li.w $a0, 17
+    bne $a5, $a0, test_registers_fail
+    li.w $a0, 18
+    bne $a6, $a0, test_registers_fail
+    li.w $a0, 19
+    bne $a7, $a0, test_registers_fail
+    li.w $a0, 20
+    bne $t0, $a0, test_registers_fail
+    li.w $a0, 21
+    bne $t1, $a0, test_registers_fail
+    li.w $a0, 22
+    bne $t2, $a0, test_registers_fail
+    li.w $a0, 23
+    bne $t3, $a0, test_registers_fail
+    li.w $a0, 24
+    bne $t4, $a0, test_registers_fail
+    li.w $a0, 25
+    bne $t5, $a0, test_registers_fail
+    li.w $a0, 26
+    bne $t6, $a0, test_registers_fail
+    li.w $a0, 27
+    bne $t7, $a0, test_registers_fail
+    li.w $a0, 28
+    bne $t8, $a0, test_registers_fail
 
     /* Return success. Note that we don't bother saving registers or bl because
      * we're not planning to return here and we don't have a valid stack.
