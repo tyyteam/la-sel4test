@@ -164,8 +164,13 @@ test_incretype2(env_t env)
         test_error_eq(error, 0);
     }
 
+#ifdef CONFIG_ARCH_LOONGARCH 
+    /* And an untyped big enough to allocate 16 16-k pages into. */
+    error = vka_alloc_untyped(&env->vka, 18, &untyped);
+#else
     /* And an untyped big enough to allocate 16 4-k pages into. */
     error = vka_alloc_untyped(&env->vka, 16, &untyped);
+#endif
     test_error_eq(error, 0);
     test_assert(untyped.cptr != 0);
 
